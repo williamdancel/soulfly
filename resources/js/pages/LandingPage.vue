@@ -262,7 +262,7 @@ const submitForm = async () => {
                                 <form @submit.prevent="submitForm" class="space-y-6">
                                     <div>
                                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                                            Name *
+                                            Name <span style="color: red;">*</span>
                                         </label>
                                         <input 
                                             v-model="form.name"
@@ -276,7 +276,7 @@ const submitForm = async () => {
 
                                     <div>
                                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                                            Email *
+                                            Email <span style="color: red;">*</span>
                                         </label>
                                         <input 
                                             v-model="form.email"
@@ -323,7 +323,7 @@ const submitForm = async () => {
 
                                     <div>
                                         <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
-                                            Message *
+                                            Message <span style="color: red;">*</span>
                                         </label>
                                         <textarea 
                                             v-model="form.message"
@@ -348,5 +348,13 @@ const submitForm = async () => {
                 </div>
             </div>
         </section>
+         <!-- Footer -->
+        <footer class="py-6">
+            <div class="container mx-auto px-4">
+                <div class="text-center">
+                    <p class="text-black-400">&copy; 2026 Soulfly Solutions Inc. All Rights Reserved.</p>
+                </div>
+            </div>
+        </footer>
     </div>
 </template>
