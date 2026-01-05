@@ -45,7 +45,11 @@ const submitForm = async () => {
             }
         })
     } catch (error) {
-        SweetAlert.error('Error', 'An unexpected error occurred. Please try again.')
+        let errorMessage = 'Please check the form for errors.'
+         if (error && Object.keys(error).length > 0) {
+            errorMessage = Object.values(error).join('<br>')
+        }
+        SweetAlert.error('Error', 'An unexpected error occurred. Please try again.', errorMessage)
         form.processing = false
     }
 }
@@ -237,13 +241,19 @@ const submitForm = async () => {
                                         <svg class="w-6 h-6 mr-3 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                         </svg>
-                                        <span>info@soulflysolutions.com</span>
+                                        <!-- Email as clickable link -->
+                                        <a href="mailto:info@soulflysolutions.com" class="hover:text-white transition-colors duration-200">
+                                            info@soulflysolutions.com
+                                        </a>
                                     </div>
                                     <div class="flex items-center">
                                         <svg class="w-6 h-6 mr-3 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                                         </svg>
-                                        <span>+63 945 793 4490</span>
+                                        <!-- Phone as clickable link -->
+                                        <a href="tel:+639457934490" class="hover:text-white transition-colors duration-200">
+                                            +63 945 793 4490
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -258,6 +268,7 @@ const submitForm = async () => {
                                             v-model="form.name"
                                             type="text" 
                                             id="name" 
+                                            maxlength="50"
                                             required
                                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="Your full name">
@@ -270,7 +281,8 @@ const submitForm = async () => {
                                         <input 
                                             v-model="form.email"
                                             type="email" 
-                                            id="email" 
+                                            id="email"
+                                            maxlength="50"
                                             required
                                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                             placeholder="your.email@example.com">
@@ -281,12 +293,18 @@ const submitForm = async () => {
                                             <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
                                                 Phone (Optional)
                                             </label>
-                                            <input 
-                                                v-model="form.phone"
-                                                type="tel" 
-                                                id="phone" 
-                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                                                placeholder="+63 912 345 6789">
+                                            <div class="flex">
+                                                <div class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500">
+                                                    +63
+                                                </div>
+                                                <input 
+                                                    v-model="form.phone"
+                                                    type="tel" 
+                                                    id="phone" 
+                                                    maxlength="10"
+                                                    class="w-full px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition -ml-px placeholder:text-sm placeholder:text-gray-400"
+                                                    placeholder="912 345 6789" style="width: 120px;">
+                                            </div>
                                         </div>
 
                                         <div>
@@ -297,6 +315,7 @@ const submitForm = async () => {
                                                 v-model="form.company"
                                                 type="text" 
                                                 id="company" 
+                                                maxlength="50"
                                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                                                 placeholder="Company Name">
                                         </div>
