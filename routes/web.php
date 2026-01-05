@@ -13,14 +13,14 @@ Route::get('/', function () {
 // Contact form submission route
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 
+// Dashboard route (with ContactController index method)
+Route::get('dashboard', [ContactController::class, 'index'], function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 // Delete contact route
 Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])
     ->middleware(['auth', 'verified'])
     ->name('contacts.destroy');
-
-// Dashboard route
-Route::get('dashboard', [ContactController::class, 'index'], function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 require __DIR__.'/settings.php';

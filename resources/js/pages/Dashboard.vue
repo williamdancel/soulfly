@@ -4,8 +4,7 @@ import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-
-declare const alert: (message: string) => void;
+import SweetAlert from '@/services/sweetAlert'
 
 interface Contact {
     id: number;
@@ -52,12 +51,6 @@ const handleSearch = () => {
     );
 };
 
-const handleKeyPress = (event: KeyboardEvent) => {
-    if (event.key === 'Enter') {
-        handleSearch();
-    }
-};
-
 const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -68,16 +61,28 @@ const formatDate = (dateString: string) => {
     });
 };
 
-const formatMessage = (message: string) => {
-    return message.length > 80 ? message.substring(0, 80) + '...' : message;
-};
 
-const deleteContact = (contactId: number) => {
-    if (confirm('Are you sure you want to delete this contact?')) {
-        // Use router.delete() instead of route()
-        router.delete(`/contacts/${contactId}`, {
-            preserveScroll: true,
-        });
+
+const deleteContact = async (contactId: number) => {
+    const result = await SweetAlert.confirm(
+                    'Delete Contacts', 'Are you sure you want to delete this contact? This action cannot be undone.'
+                );
+
+    if (result.isConfirmed) {
+        try {
+            await router.delete(`/contacts/${contactId}`, {
+                preserveScroll: true,
+            });
+            
+            // Show success message
+            SweetAlert.warning(
+                    'Delete Contacts', 'Contact has been deleted.'
+                );
+        } catch (error) {
+            SweetAlert.error(
+                    'Delete Contacts', 'Failed to delete contact. Please try again.'
+                );
+        }
     }
 };
 
@@ -235,7 +240,7 @@ const hasData = computed(() => props.contacts && props.contacts.data.length > 0)
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                                     </svg>
                                                     <span class="text-xs text-gray-600 dark:text-gray-400">
-                                                        {{ contact.phone }}
+                                                        {{ '+63 ' + contact.phone }}
                                                     </span>
                                                 </div>
                                                 <div v-if="contact.company" class="flex items-center gap-2">
@@ -255,15 +260,9 @@ const hasData = computed(() => props.contacts && props.contacts.data.length > 0)
                                 <td class="px-6 py-4">
                                     <div class="max-w-xs">
                                         <p class="text-sm text-gray-600 dark:text-gray-400">
-                                            {{ formatMessage(contact.message) }}
+                                            {{ contact.message }}
                                         </p>
-                                        <button 
-                                            v-if="contact.message.length > 80"
-                                            @click="alert(contact.message)"
-                                            class="mt-1 text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400"
-                                        >
-                                            View full
-                                        </button>
+                                    
                                     </div>
                                 </td>
 
