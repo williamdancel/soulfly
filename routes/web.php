@@ -13,6 +13,11 @@ Route::get('/', function () {
 // Contact form submission route
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 
+// Delete contact route
+Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])
+    ->middleware(['auth', 'verified'])
+    ->name('contacts.destroy');
+
 // Dashboard route
 Route::get('dashboard', [ContactController::class, 'index'], function () {
     return Inertia::render('Dashboard');

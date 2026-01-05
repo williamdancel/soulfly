@@ -3,6 +3,8 @@ import { reactive } from 'vue'
 import { router } from '@inertiajs/vue3'
 import SweetAlert from '@/services/sweetAlert'
 import '../../css/components/landing-page.css'
+import { ref, onMounted, onUnmounted } from 'vue'
+
 
 const form = reactive({
     name: '',
@@ -53,6 +55,35 @@ const submitForm = async () => {
         form.processing = false
     }
 }
+    // Back to Top Button Logic
+    const showBackToTop = ref(false)
+
+    const handleScroll = () => {
+        showBackToTop.value = window.scrollY > 300
+    }
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+
+    onMounted(() => {
+        window.addEventListener('scroll', handleScroll)
+    })
+
+    onUnmounted(() => {
+        window.removeEventListener('scroll', handleScroll)
+    })
+
+    // Smooth Scroll to Section
+    const scrollToSection = (sectionId: string) => {
+        const section = document.getElementById(sectionId)
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth' })
+        }
+    }
 </script>
 <template>
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -77,23 +108,27 @@ const submitForm = async () => {
                     </p>
                     
                     <div class="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-                        <a href="#services" 
-                           class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl">
+                        <button 
+                            @click="scrollToSection('services')"
+                            class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
+                        >
                             Explore Services
-                        </a>
-                        <a href="#contact" 
-                           class="px-8 py-3 bg-white text-blue-600 font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition duration-300">
+                        </button>
+                        <button 
+                            @click="scrollToSection('contact')"
+                            class="px-8 py-3 bg-white text-blue-600 font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition duration-300"
+                        >
                             Get In Touch
-                        </a>
+                        </button>
                     </div>
                     
                     <!-- Scroll Indicator -->
                     <div class="mt-20 animate-bounce">
-                        <a href="#services" class="text-gray-400 hover:text-blue-600 transition">
+                        <button  @click="scrollToSection('services')" class="text-gray-400 hover:text-blue-600 transition">
                             <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                             </svg>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -356,5 +391,16 @@ const submitForm = async () => {
                 </div>
             </div>
         </footer>
+        <!-- Back to Top Button -->
+        <button
+            v-show="showBackToTop"
+            @click="scrollToTop"
+            class="fixed bottom-6 right-6 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 ease-in-out transform hover:scale-110 z-50"
+            aria-label="Back to top"
+        >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+            </svg>
+        </button>
     </div>
 </template>

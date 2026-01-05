@@ -45,6 +45,19 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const searchQuery = ref(props.filters?.search || '');
 
+const handleSearch = () => {
+    router.get('/dashboard', 
+        { search: searchQuery.value }, 
+        { preserveState: true, replace: true }
+    );
+};
+
+const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+        handleSearch();
+    }
+};
+
 const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -147,10 +160,17 @@ const hasData = computed(() => props.contacts && props.contacts.data.length > 0)
                         </svg>
                         <input
                             v-model="searchQuery"
+                            @keyup.enter="handleSearch"
                             type="text"
                             placeholder="Search contacts..."
                             class="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:focus:border-blue-500"
                         />
+                        <button 
+                            @click="handleSearch"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600"
+                        >
+                            Search
+                        </button>
                     </div>
                 </div>
 
