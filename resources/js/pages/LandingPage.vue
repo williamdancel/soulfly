@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
+import { router } from '@inertiajs/vue3'
+import SweetAlert from '@/services/sweetAlert'
 import '../../css/components/landing-page.css'
 
 const form = reactive({
@@ -8,25 +10,44 @@ const form = reactive({
     phone: '',
     company: '',
     message: '',
-    newsletter: false,
     processing: false,
 })
 
-const submitForm = () => {
+const submitForm = async () => {
     form.processing = true
     
-    // In a real application, you would make an API call here
-    // For now, we'll simulate a submission
-    setTimeout(() => {
-        alert('Thank you for your message! We will get back to you soon.')
-        form.name = ''
-        form.email = ''
-        form.phone = ''
-        form.company = ''
-        form.message = ''
-        form.newsletter = false
+    try {
+        await router.post('/contacts', form, {
+            preserveScroll: true,
+            onSuccess: () => {
+                SweetAlert.success(
+                    'Thank You!',
+                    'Your message has been sent successfully. We will get back to you within 24 hours.'
+                )
+                
+                // Reset form
+                form.name = ''
+                form.email = ''
+                form.phone = ''
+                form.company = ''
+                form.message = ''
+                form.processing = false
+            },
+            onError: (errors) => {
+                let errorMessage = 'Please check the form for errors.'
+                
+                if (errors && Object.keys(errors).length > 0) {
+                    errorMessage = Object.values(errors).join('<br>')
+                }
+                
+                SweetAlert.error('Submission Failed', errorMessage)
+                form.processing = false
+            }
+        })
+    } catch (error) {
+        SweetAlert.error('Error', 'An unexpected error occurred. Please try again.')
         form.processing = false
-    }, 1500)
+    }
 }
 </script>
 <template>
@@ -252,7 +273,7 @@ const submitForm = () => {
                                             id="email" 
                                             required
                                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                                            placeholder="your.email@company.com">
+                                            placeholder="your.email@example.com">
                                     </div>
 
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
