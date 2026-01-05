@@ -79,9 +79,11 @@ const deleteContact = async (contactId: number) => {
                     'Delete Contacts', 'Contact has been deleted.'
                 );
         } catch (error) {
-            SweetAlert.error(
-                    'Delete Contacts', 'Failed to delete contact. Please try again.'
-                );
+            let errorMessage = 'Please check the form for errors.';
+            if (error && Object.keys(error).length > 0) {
+                errorMessage = Object.values(error).join('<br>')
+            }
+            SweetAlert.error('Error', 'An unexpected error occurred. Please try again.', errorMessage)
         }
     }
 };
